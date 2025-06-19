@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "database": {
+      "command": "python",
+      "args": ["/绝对路径/到/database_server.py"],
+      "env": {
+        "DATABASE_PATH": "example.db"
+      }
+    }
+  }
+} 
