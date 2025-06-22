@@ -5,7 +5,9 @@ import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Photo } from '@/lib/supabase'
 import { getMockPhotoById } from '@/lib/mockData'
-import { ArrowLeft, Heart, Share2, MapPin, Camera } from 'lucide-react'
+import CommentSection from '@/components/photo/CommentSection'
+import LikeButton from '@/components/photo/LikeButton'
+import { ArrowLeft, Share2, MapPin, Camera } from 'lucide-react'
 
 export default function PhotoDetailPage() {
   const params = useParams()
@@ -115,10 +117,10 @@ export default function PhotoDetailPage() {
 
             {/* 操作按钮 */}
             <div className="flex space-x-4">
-              <button className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
-                <Heart className="w-4 h-4 mr-2" />
-                {photo.likes_count}
-              </button>
+              <LikeButton 
+                photoId={photo.id}
+                initialLikes={photo.likes_count || 0}
+              />
               <button className="flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
                 <Share2 className="w-4 h-4 mr-2" />
                 分享
@@ -206,6 +208,11 @@ export default function PhotoDetailPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* 评论区 */}
+        <div className="mt-12 max-w-4xl mx-auto">
+          <CommentSection photoId={photo.id} />
         </div>
       </div>
     </div>

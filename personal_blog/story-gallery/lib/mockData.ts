@@ -159,7 +159,35 @@ export const getMockPhotoById = (id: string): Photo | null => {
   return mockPhotos.find(photo => photo.id === id) || null
 }
 
-// 获取模拟照片列表
+// 获取上传的照片（仅在客户端）
+export const getUploadedPhotos = async (): Promise<Photo[]> => {
+  if (typeof window === 'undefined') return []
+  
+  try {
+    const response = await fetch('/db.json')
+    if (!response.ok) return []
+    
+    const data = await response.json()
+    if (!data.photos) return []
+    
+    return data.photos.map((photo: any) => ({
+      ...photo,
+      image_url: `/api/uploads/${photo.file_name}`,
+      thumbnail_url: `/api/uploads/${photo.file_name}`
+    }))
+  } catch (error) {
+    return []
+  }
+}
+
+// 获取模拟照片列表（合并上传的照片和模拟数据）
 export const getMockPhotos = (limit: number = 20, offset: number = 0): Photo[] => {
   return mockPhotos.slice(offset, offset + limit)
+}
+
+// 获取所有照片（包括上传的和模拟的）
+export const getAllPhotos = async (limit: number = 20, offset: number = 0): Promise<Photo[]> => {
+  const uploadedPhotos = await getUploadedPhotos()
+  const allPhotos = [...uploadedPhotos, ...mockPhotos]
+  return allPhotos.slice(offset, offset + limit)
 } 

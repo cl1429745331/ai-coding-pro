@@ -56,6 +56,12 @@ export default function Home() {
               <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 关于
               </a>
+              <button 
+                onClick={() => router.push('/admin/login')}
+                className="text-gray-400 hover:text-white transition-colors text-sm"
+              >
+                管理员
+              </button>
             </nav>
           </div>
         </div>
