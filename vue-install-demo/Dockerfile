@@ -1,32 +1,32 @@
-# 多阶段构建 - 构建阶段
-FROM node:18-alpine AS build-stage
+# Multi-stage build - Build stage
+FROM node:18 AS build-stage
 
-# 设置工作目录
+# Set working directory
 WORKDIR /app
 
-# 复制package文件
+# Copy package files
 COPY package*.json ./
 
-# 安装依赖
-RUN npm ci --only=production
+# Install dependencies (including dev dependencies for build)
+RUN npm ci
 
-# 复制源代码
+# Copy source code
 COPY . .
 
-# 构建应用
+# Build application
 RUN npm run build
 
-# 生产阶段 - 使用nginx服务静态文件
-FROM nginx:alpine AS production-stage
+# Production stage - Use nginx to serve static files
+FROM nginx:latest AS production-stage
 
-# 复制自定义nginx配置
+# Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# 从构建阶段复制构建产物到nginx目录
+# Copy build artifacts from build stage to nginx directory
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# 暴露端口
+# Expose port
 EXPOSE 80
 
-# 启动nginx
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
